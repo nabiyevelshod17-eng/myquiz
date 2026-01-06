@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>Registratsiya va Test</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 360px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 6px 0;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.option {
+    display: block;
+    margin: 6px 0;
+    text-align: left;
+}
+
+#game, #quiz, #result {
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<!-- REGISTRATSIYA -->
+<div class="box" id="register">
+    <h2>Registratsiya</h2>
+    <input id="name" placeholder="Ism">
+    <input id="surname" placeholder="Familiya">
+    <input id="email" placeholder="Email">
+    <button onclick="register()">Registratsiya</button>
+</div>
+
+<!-- BOSHLASH -->
+<div class="box" id="game">
+    <h2>Xush kelibsiz 🎓</h2>
+    <p id="userInfo"></p>
+    <button onclick="startQuiz()">Boshlash</button>
+</div>
+
+<!-- TEST -->
+<div class="box" id="quiz">
+    <h3 id="question"></h3>
+
+    <label class="option">
+        <input type="radio" name="answer" value="a"> <span id="a"></span>
+    </label>
+    <label class="option">
+        <input type="radio" name="answer" value="b"> <span id="b"></span>
+    </label>
+    <label class="option">
+        <input type="radio" name="answer" value="c"> <span id="c"></span>
+    </label>
+    <label class="option">
+        <input type="radio" name="answer" value="d"> <span id="d"></span>
+    </label>
+
+    <button onclick="nextQuestion()">Keyingi</button>
+</div>
+
+<!-- NATIJA -->
+<div class="box" id="result">
+    <h2>Natija 📊</h2>
+    <p id="score"></p>
+</div>
+
+
+  <script>
+let questions = [
+    {q:"940 − 390 = ?", a:"580", b:"550", c:"505", d:"600", correct:"b"},
+    {q:"x + 420 = 600. x = ?", a:"180", b:"70", c:"106", d:"140", correct:"a"},
+    {q:"534 + x = 925. x = ?", a:"845", b:"391", c:"640", d:"302", correct:"b"},
+    {q:"Tomonlari 6 sm va 4 sm bo‘lgan to‘rtburchak perimetri?", a:"42", b:"28", c:"20", d:"34", correct:"c"},
+    {q:"720 : 6 = ?", a:"130", b:"120", c:"105", d:"102", correct:"b"},
+    {q:"600 banka bodring, undan 2 marta kam pomidor. Pomidor nechta?", a:"250", b:"240", c:"300", d:"204", correct:"c"},
+    {q:"809 − (243 + 127) = ?", a:"439", b:"805", c:"750", d:"155", correct:"a"},
+    {q:"x × 8 = 48. x = ?", a:"7", b:"8", c:"6", d:"9", correct:"c"},
+    {q:"39 : 7 qoldiq nechaga teng?", a:"6 (4 q)", b:"5 (4 q)", c:"2 (4 q)", d:"6 (3 q)", correct:"b"},
+    {q:"Yuzi 20 sm², bir tomoni 5 sm. Ikkinchi tomoni?", a:"4", b:"7", c:"9", d:"6", correct:"a"},
+
+];
+let index = 0;
+let score = 0;
+
+function register() {
+    let name = document.getElementById("name").value;
+    let surname = document.getElementById("surname").value;
+    let email = document.getElementById("email").value;
+
+    if (!name || !surname || !email) {
+        alert("Hamma joyni to‘ldir!");
+        return;
+    }
+
+    document.getElementById("register").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    document.getElementById("userInfo").innerText =
+        name + " " + surname + " (" + email + ")";
+}
+
+function startQuiz() {
+    document.getElementById("game").style.display = "none";
+    document.getElementById("quiz").style.display = "block";
+    loadQuestion();
+}
+
+function loadQuestion() {
+    let q = questions[index];
+    document.getElementById("question").innerText =
+        (index+1) + ". " + q.q;
+    document.getElementById("a").innerText = q.a;
+    document.getElementById("b").innerText = q.b;
+    document.getElementById("c").innerText = q.c;
+    document.getElementById("d").innerText = q.d;
+
+    document.querySelectorAll('input[name="answer"]').forEach(el => el.checked = false);
+}
+
+function nextQuestion() {
+    let selected = document.querySelector('input[name="answer"]:checked');
+    if (!selected) {
+        alert("Variant tanla!");
+        return;
+    }
+
+    if (selected.value === questions[index].correct) {
+        score++;
+    }
+
+    index++;
+
+    if (index < questions.length) {
+        loadQuestion();
+    } else {
+        document.getElementById("quiz").style.display = "none";
+        document.getElementById("result").style.display = "block";
+        document.getElementById("score").innerText =
+            "Siz 10 ta savoldan " + score + " tasiga to‘g‘ri javob berdingiz ✅";
+    }
+}
+</script>
+
+</body>
+</html>
